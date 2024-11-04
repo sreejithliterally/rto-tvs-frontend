@@ -3,6 +3,19 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FaIdCard, FaMotorcycle, FaMoneyBillWave } from 'react-icons/fa';
 import '../styles/AccountCustomerDetails.css';
 
+const financeOptions = {
+  1: 'IDFC',
+  2: 'HDFC',
+  3: 'TVS Credit',
+  4: 'Sreeramcheng',
+  5: 'Tata Cap',
+  6: 'HDB',
+  7: 'Indus',
+  8: 'Kotak',
+  9: 'Sreeram Alp',
+  10: 'Bajaj Alp'
+};
+
 const AccountCustomerDetails = () => {
   const { customerId } = useParams();
   const navigate = useNavigate();
@@ -212,36 +225,36 @@ const AccountCustomerDetails = () => {
             ))}
           </div>
 
-          {/* Financial Details */}
-          <div className="section financial">
-            <h3><FaMoneyBillWave /> Financial Information</h3>
-            {['tax', 'insurance', 'tp_registration', 'amount_paid', 'balance_amount', 'total_price', 'finance_id', 'finance_amount'].map((field) => (
-              <div key={field} className="detail-item">
-                <span className="label">{field.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase())}:</span>
-                <input
-                  type="text"
-                  name={field}
-                  value={editableFields[field] || ''}
-                  onChange={handleFieldChange}
-                  disabled={!showEditForm}
-                />
-              </div>
-            ))}
-            <div className="detail-item">
-              <span className="label">Registered:</span>
-              <span className="value">{customer.registered ? 'Yes' : 'No'}</span>
-            </div>
-          </div>
+         {/* Financial Details */}
+<div className="section financial">
+  <h3><FaMoneyBillWave /> Financial Information</h3>
+  {['tax', 'insurance', 'tp_registration', 'amount_paid', 'balance_amount', 'total_price', 'finance_amount'].map((field) => (
+    <div key={field} className="detail-item">
+      <span className="label">{field.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase())}:</span>
+      <input
+        type="text"
+        name={field}
+        value={editableFields[field] || ''}
+        onChange={handleFieldChange}
+        disabled={!showEditForm}
+      />
+    </div>
+  ))}
+  <div className="detail-item">
+    <span className="label">Finance:</span>
+    <span className="value">{financeOptions[customer.finance_id] || 'Not Assigned'}</span>
+  </div>
+  <div className="detail-item">
+    <span className="label">Registered:</span>
+    <span className="value">{customer.registered ? 'Yes' : 'No'}</span>
+  </div>
+</div>
 
-          {/* Buttons */}
-          <button onClick={() => setShowEditForm((prev) => !prev)}>
-            {showEditForm ? 'Save Changes' : 'Edit Customer'}
-          </button>
-          {showEditForm && (
-            <button onClick={handleUpdateCustomer}>
-              Save
-            </button>
-          )}
+
+          
+          {!customer.accounts_verified && (
+  <button onClick={verifyCustomer}>Verify Customer</button>
+)}
 
           {/* Finance Form */}
           {!showFinanceForm && (
@@ -256,18 +269,21 @@ const AccountCustomerDetails = () => {
                 value={financeAmount}
                 onChange={(e) => setFinanceAmount(e.target.value)}
               />
-              <input
-                type="text"
-                placeholder="Finance ID"
+              <select
                 value={financeId}
                 onChange={(e) => setFinanceId(e.target.value)}
-              />
+              >
+                <option value="">Select Finance</option>
+                {Object.entries(financeOptions).map(([id, name]) => (
+                  <option key={id} value={id}>
+                    {name}
+                  </option>
+                ))}
+              </select>
               <button onClick={handleFinanceSubmit}>Submit Finance</button>
               <button onClick={() => setShowFinanceForm(false)}>Cancel</button>
             </div>
           )}
-
-          <button onClick={verifyCustomer}>Verify Customer</button>
         </div>
       )}
     </div>
